@@ -10,6 +10,7 @@ from sqlalchemy.orm import relationship, DeclarativeBase, mapped_column
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 from flask_gravatar import Gravatar
+import gunicorn
 
 # basedir = os.path.abspath(os.path.dirname(__file__))
 
