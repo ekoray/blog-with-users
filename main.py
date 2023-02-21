@@ -39,7 +39,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-@ login_manager.user_loader
+@login_manager.user_loader
 def load_user(user_id):
     return db.get_or_404(User, int(user_id))
 
@@ -107,9 +107,8 @@ with app.app_context():
 
 
 def admin_only(f):
-    @ wraps(f)
+    @wraps(f)
     def deco_func(*args, **kwargs):
-
         if current_user.get_id() != '1':
             return abort(403)
 
@@ -118,20 +117,21 @@ def admin_only(f):
     return deco_func
 
 
-@ app.route('/')
+@app.route('/')
 def get_all_posts():
     posts = BlogPost.query.all()
-    return render_template("index.html", all_posts=posts,  logged_in=current_user.is_authenticated, user_id=current_user.get_id())
+    return render_template("index.html", all_posts=posts, logged_in=current_user.is_authenticated,
+                           user_id=current_user.get_id())
 
 
-@ app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
 
     if form.validate_on_submit():
 
         try:
-            user = db.session.execute(db.select(User).filter_by(
+            db.session.execute(db.select(User).filter_by(
                 email=form.email.data)).scalar_one()
         except:
             user_email = form.email.data
@@ -178,7 +178,8 @@ def login():
             flash("Wrong password. Please try again.")
             return redirect(url_for('login'))
 
-    return render_template("login.html", form=form, logged_in=current_user.is_authenticated, user_id=current_user.get_id())
+    return render_template("login.html", form=form, logged_in=current_user.is_authenticated,
+                           user_id=current_user.get_id())
 
 
 @app.route('/logout')
@@ -206,7 +207,8 @@ def show_post(post_id):
             flash("Login to comment")
             return redirect(url_for('login'))
 
-    return render_template("post.html", post=requested_post, logged_in=current_user.is_authenticated, user_id=current_user.get_id(), form=comment_form)
+    return render_template("post.html", post=requested_post, logged_in=current_user.is_authenticated,
+                           user_id=current_user.get_id(), form=comment_form)
 
 
 @app.route("/about")
