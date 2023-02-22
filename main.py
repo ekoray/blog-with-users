@@ -31,7 +31,7 @@ gravatar = Gravatar(app, size=100,
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
 #     os.path.join(basedir, 'blog.db')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///blog.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -102,8 +102,8 @@ class Comment(db.Model):
     blog_post = relationship("BlogPost", back_populates="comments")
 
 
-with app.app_context():
-    db.create_all()
+# with app.app_context():
+#     db.create_all()
 
 
 def admin_only(f):
@@ -139,11 +139,7 @@ def register():
                 form.password.data, "pbkdf2:sha256", salt_length=8)
             user_name = form.name.data
 
-            new_user = User(
-                name=user_name,
-                email=user_email,
-                password=user_pass
-            )
+            new_user = User( name=user_name, email=user_email, password=user_pass)
             db.session.add(new_user)
             db.session.commit()
 
